@@ -1,0 +1,974 @@
+﻿<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentação da API — Laboratório de Circuitos</title>
+    <meta name="description" content="Documentação da API para construção e análise de circuitos eléctricos." />
+    <style>
+        :root {
+            --bg: #f8fafc;
+            /* slate-50 */
+            --panel: #ffffff;
+            --ink: #0f172a;
+            /* slate-900 */
+            --muted: #475569;
+            /* slate-600 */
+            --primary: #16a34a;
+            /* blue-600 */
+            --primary-ink: #ffffff;
+            --border: #e2e8f0;
+            /* slate-200 */
+            --code: #0b1020;
+            --code-bg: #0b1020;
+            /* same for seamless blocks */
+            --chip: #e2e8f0;
+            --ok: #16a34a;
+            --warn: #f59e0b;
+            --err: #dc2626;
+            /* cores por método */
+            --get: #2563eb;
+            /* azul */
+            --post: #16a34a;
+            /* verde */
+            --put: #ca8a04;
+            /* âmbar */
+            --patch: #7c3aed;
+            /* violeta */
+            --delete: #dc2626;
+            /* vermelho */
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh
+        }
+
+        aside {
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: auto
+        }
+
+        main {
+            padding: 24px 32px;
+        }
+
+        header.top {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(to bottom, rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.75));
+            backdrop-filter: saturate(1.2) blur(6px);
+            border-bottom: 1px solid var(--border);
+            z-index: 5
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0 20px 0
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px #16a34c5c
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0
+        }
+
+        nav a {
+            display: block;
+            padding: 8px 10px;
+            margin: 2px 0;
+            border-radius: 10px;
+            color: var(--muted);
+            text-decoration: none
+        }
+
+        nav a:hover {
+            background: #f1f5f9;
+            color: var(--ink)
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--chip);
+            color: #334155;
+            background: #f8fafc;
+            font-size: 12px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px
+        }
+
+        .lead {
+            font-size: 18px;
+            color: #334155;
+            margin-top: 6px
+        }
+
+        .hl {
+            color: var(--primary);
+            font-weight: 600
+        }
+
+        h2 {
+            margin-top: 36px
+        }
+
+        h3 {
+            margin-top: 24px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            background: var(--primary);
+            color: var(--primary-ink);
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary)
+        }
+
+        /* Endpoint base */
+        .endpoint {
+            padding: 14px 16px;
+            margin: 16px 0;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            position: relative
+        }
+
+        .endpoint::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            border-top-left-radius: 14px;
+            border-bottom-left-radius: 14px
+        }
+
+        .endpoint h3 {
+            margin: 2px 0 8px 0;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            letter-spacing: .2px
+        }
+
+        .endpoint .method {
+            display: inline-block;
+            font-weight: 800;
+            margin-right: 8px;
+            padding: 2px 10px;
+            border-radius: 999px;
+            color: #fff
+        }
+
+        /* Cores por método aplicadas via classes */
+        .endpoint.get::before {
+            background: var(--get)
+        }
+
+        .endpoint.get .method {
+            background: var(--get)
+        }
+
+        .endpoint.post::before {
+            background: var(--post)
+        }
+
+        .endpoint.post .method {
+            background: var(--post)
+        }
+
+        .endpoint.put::before {
+            background: var(--put)
+        }
+
+        .endpoint.put .method {
+            background: var(--put)
+        }
+
+        .endpoint.patch::before {
+            background: var(--patch)
+        }
+
+        .endpoint.patch .method {
+            background: var(--patch)
+        }
+
+        .endpoint.delete::before {
+            background: var(--delete)
+        }
+
+        .endpoint.delete .method {
+            background: var(--delete)
+        }
+
+        .badge {
+            font-size: 12px;
+            border-radius: 8px;
+            padding: 2px 8px;
+            border: 1px solid var(--chip);
+            color: #334155;
+            background: #f8fafc
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden
+        }
+
+        .table th,
+        .table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left
+        }
+
+        .code {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            margin: 10px 0
+        }
+
+        .code pre {
+            margin: 0;
+            padding: 16px;
+            white-space: pre;
+            overflow: auto;
+            background: #f3f3f3e0;
+            color: var(--code-bg);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            font-size: 13.5px
+        }
+
+        .code .actions {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            display: flex;
+            gap: 6px
+        }
+
+        .chip {
+            display: inline-block;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--chip);
+            background: #f8fafc;
+            color: #334155
+        }
+
+        .status {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .status.ok {
+            color: var(--ok)
+        }
+
+        .status.warn {
+            color: var(--warn)
+        }
+
+        .status.err {
+            color: var(--err)
+        }
+
+        .kbd {
+            font-family: ui-monospace, monospace;
+            border: 1px solid var(--chip);
+            border-bottom-width: 2px;
+            padding: 0 6px;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #0f172a
+        }
+
+        .toc small {
+            color: #64748b
+        }
+
+        .hero {
+            background: radial-gradient(1200px 400px at 20% -10%, #16a34a24, transparent), radial-gradient(1000px 400px at 80% 0%, rgba(16, 185, 129, .08), transparent);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px
+        }
+
+        .kbd-tip {
+            margin-top: 6px;
+            color: #64748b
+        }
+
+        .svgwrap {
+            display: flex;
+            justify-content: center
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: #64748b
+        }
+
+        .note {
+            background: #f0f7f2;
+            border-left: 4px solid #16a34a;
+            padding: 12px 14px;
+            border-radius: 10px
+        }
+
+        @media (max-width: 980px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            .hide-mobile {
+                display: none
+            }
+        }
+
+        .code-tabs {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            padding-right: 20px;
+        }
+
+        .tab-btn {
+            background: #f7f7f7;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            width: auto;
+            min-width: 100px;
+            text-align: center;
+            padding: 8px 20px;
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            border-bottom: 2px solid #0078d7;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 10px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <aside>
+            <div class="brand">
+                <img class="logo"
+                    src="https://img.icons8.com/?size=100&amp;id=cNJbHjFf9OV-&amp;format=png&amp;color=000000"
+                    alt="Ícone Laboratório de Circuitos">
+                <div>
+                    <h1>API de Circuitos</h1>
+                </div>
+            </div>
+            <nav id="toc" class="toc" aria-label="Secções">
+                <a href="#intro">Introdução</a>
+                <a href="#autenticacao">Autenticação</a>
+                <a href="#boas-praticas">Boas práticas</a>
+                <a href="#endpoints">Endpoints</a>
+                <small>
+                    — Operações
+                    <div class="hide-mobile">
+                        <a href="#criar-sessao">POST /api/session</a>
+                        <a href="#eliminar-sessao">DELETE /api/session/{sessionId}</a>
+                        <a href="#adicionar-componente">POST /api/{sessionId}/component</a>
+                        <a href="#conectar">POST /api/{sessionId}/connect</a>
+                        <a href="#construir">POST /api/{sessionId}/circuit</a>
+                        <a href="#obter">GET /api/{sessionId}/circuit</a>
+                        <a href="#analisar">GET /api/{sessionId}/analysis</a>
+                    </div>
+                </small>
+            </nav>
+            <div style="margin-top:16px">
+                <span class="chip">v1</span>
+                <span class="chip">JSON</span>
+            </div>
+        </aside>
+        <main>
+            <header class="top">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0">
+                    <div>
+                        <strong>Documentação da API — Laboratório de Circuitos</strong>
+                        <!-- <div class="kbd-tip">Por Isac Munguambe</div> -->
+                    </div>
+                </div>
+            </header>
+            <section id="app-download" class="hero"
+                style="border:2px solid var(--primary); background:#f0fdf4; margin-bottom:32px; padding:28px 36px; position:relative; overflow:hidden;">
+
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:40px;">
+                    <!-- Texto à esquerda -->
+                    <div style="flex:1; max-width:600px;">
+                        <h2 style="margin-top:0;margin-bottom:8px;">Fizicar — Laboratório em Realidade Aumentada</h2>
+                        <p class="lead" style="font-size:16px; margin-bottom:10px;">
+                            O <strong>Fizicar</strong> é um laboratório virtual desenvolvido em Unity que permite
+                            simular circuitos eléctricos em realidade aumentada, proporcionando uma experiência de
+                            aprendizagem prática, visual e intuitiva.
+                        </p>
+                        <a href="#" class="btn"
+                            style="margin-top:14px;    text-decoration: none;">
+                            Descarregar Aplicação (Android)
+                        </a>
+                    </div>
+
+                    <!-- Imagem fixa no canto direito -->
+                    <div style="flex-shrink:0;">
+                        <img src="./imgs/virtualAndReal-1.jpg" alt="Imagem de resistência"
+                            style="width:400px; height:auto; border-radius:12px; border:2px dashed var(--primary); padding:8px; position:relative; right:0;">
+                        <p
+                            style="color:#64748b; font-size:13px; text-align:center; margin-top:6px; margin-bottom: 0px;">
+                            Simula e aprende
+                            com circuitos reais</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="intro" class="hero">
+                <h2 style="margin-top: 0px;">Introdução</h2>
+                <p class="lead">
+                    Esta API permite criar sessões de circuito, adicionar componentes, ligar terminais e obter análise
+                    eléctrica.
+                </p>
+                <div class="grid" style="margin-top:12px">
+                    <div class="card">
+                        <div class="status ok">• Token de Sessão</div>
+                        <div class="muted"> Os endpoints baseiam-se no <strong>token de sessão</strong>, para registo de
+                            todas operações.</div>
+                    </div>
+                    <div class="card">
+                        <div class="status ok">• Tempo de Resposta</div>
+                        <div class="muted">Latência &lt; 200ms por operação.</div>
+                    </div>
+                    <div class="card">
+                        <div class="status ok">• Versatilidade</div>
+                        <div class="muted">A API permite manipulação dinâmica dos componentes e ligações.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="autenticacao">
+                <h2>Autenticação</h2>
+                <p>A API pode operar sem credenciais em ambiente de testes. Em produção, use <strong>Bearer
+                        Token</strong> no cabeçalho <code>Authorization</code>.</p>
+                <div class="note"><strong>Exemplo de cabeçalhos</strong>: <code>Content-Type: application/json</code> e
+                    <code>Authorization: Bearer &lt;token&gt;</code>.
+                </div>
+            </section>
+
+            <section id="boas-praticas">
+                <h2>Boas práticas</h2>
+                <ul>
+                    <li>Use <em>ids</em> curtos para componentes (ex.: <code>R1</code>, <code>V1</code>).</li>
+                    <li>Adote unidades SI no campo <code>value</code> (Ω, V, A conforme o tipo).</li>
+                    <li>Garanta unicidade dos nós (<code>nodeA</code>, <code>nodeB</code>) na análise.</li>
+                    <li>Persista o <code>sessionId</code> no cliente entre chamadas.</li>
+                </ul>
+            </section>
+
+            <section id="endpoints">
+                <h2>Endpoints</h2>
+
+                <!-- Criar sessão -->
+                <article id="criar-sessao" class="endpoint post">
+                    <div><span class="badge">Sessões</span></div>
+                    <h3><span class="method">POST</span> /api/session</h3>
+                    <p>Inicia nova sessão de circuito e devolve identificador.</p>
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X POST \
+    -H "Content-Type: application/json" \
+    http://fizicar.somee.com/api/session</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method POST `
+    -Uri 'http://fizicar.somee.com/api/session' `
+    -ContentType 'application/json' `
+    -Body '{}'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{ "sessionId": "abc-123" }</code></pre>
+                    </div>
+                </article>
+
+                <!-- Adicionar componente -->
+                <article id="adicionar-componente" class="endpoint post">
+                    <div><span class="badge">Componentes</span></div>
+                    <h3><span class="method">POST</span> /api/{sessionId}/component</h3>
+                    <p>Adiciona um novo componente ao circuito da sessão.</p>
+
+                    <strong>Pedido</strong>
+                    <div class="code">
+                        <pre><code>{
+    "id": "R1",
+    "type": "resistor",
+    "value": 1000
+}</code></pre>
+                    </div>
+
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"id":"R1","type":"resistor","value":1000}' \
+    http://fizicar.somee.com/api/abc-123/component</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method POST `
+    -Uri 'http://fizicar.somee.com/api/abc-123/component' `
+    -ContentType 'application/json' `
+    -Body '{"id":"R1","type":"resistor","value":1000}'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 201</strong>
+                    <div class="code">
+                        <pre><code>{
+    "id": "R1",
+    "type": "resistor",
+    "value": 1000,
+    "nodeA": "n1",
+    "nodeB": "n2"
+}</code></pre>
+                    </div>
+                </article>
+
+                <!-- Conectar componentes -->
+                <article id="conectar" class="endpoint post">
+                    <div><span class="badge">Ligações</span></div>
+                    <h3><span class="method">POST</span> /api/{sessionId}/connect</h3>
+                    <p>Cria uma ligação entre terminais de dois componentes.</p>
+
+                    <strong>Pedido</strong>
+                    <div class="code">
+                        <pre><code>{
+    "component1": "R1",
+    "terminal1": "a",
+    "component2": "V1",
+    "terminal2": "a"
+}</code></pre>
+                    </div>
+
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"component1":"R1","terminal1":"a","component2":"V1","terminal2":"a"}' \
+    http://fizicar.somee.com/api/abc-123/connect</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method POST `
+    -Uri 'http://fizicar.somee.com/api/abc-123/connect' `
+    -ContentType 'application/json' `
+    -Body '{"component1":"R1","terminal1":"a","component2":"V1","terminal2":"a"}'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{ "message": "Connection added" }</code></pre>
+                    </div>
+                </article>
+
+                <!-- Construir circuito completo -->
+                <article id="construir" class="endpoint post">
+                    <div><span class="badge">Circuito</span></div>
+                    <h3><span class="method">POST</span> /api/{sessionId}/circuit</h3>
+                    <p>Monta o circuito com listas completas de componentes e ligações.</p>
+
+                    <strong>Pedido</strong>
+                    <div class="code">
+                        <pre><code>{
+    "components": [
+        { "id": "V1", "type": "voltageSource", "value": 5 },
+        { "id": "R1", "type": "resistor", "value": 1000 }
+    ],
+    "connections": [
+        { "component1": "V1", "terminal1": "a", "component2": "R1", "terminal2": "a" }
+    ]
+}</code></pre>
+                    </div>
+
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"components":[{"id":"V1","type":"voltageSource","value":5},{"id":"R1","type":"resistor","value":1000}],
+        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}]}' \
+    http://fizicar.somee.com/api/abc-123/circuit</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method POST `
+    -Uri 'http://fizicar.somee.com/api/abc-123/circuit' `
+    -ContentType 'application/json' `
+    -Body '{
+        "components":[{"id":"V1","type":"voltageSource","value":5},{"id":"R1","type":"resistor","value":1000}],
+        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}]
+    }'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{ "message": "Circuit built" }</code></pre>
+                    </div>
+                </article>
+
+                <!-- Obter circuito actual -->
+                <article id="obter" class="endpoint get">
+                    <div><span class="badge">Circuito</span></div>
+                    <h3><span class="method">GET</span> /api/{sessionId}/circuit</h3>
+                    <p>Devolve a estrutura actual de componentes e ligações da sessão.</p>
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X GET \
+    http://fizicar.somee.com/api/abc-123/circuit</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method GET `
+    -Uri 'http://fizicar.somee.com/api/abc-123/circuit'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{
+    "components": [
+        { "id": "V1", "type": "voltageSource", "value": 5, "nodeA": "0", "nodeB": "1" },
+        { "id": "R1", "type": "resistor", "value": 1000, "nodeA": "1", "nodeB": "0" }
+    ],
+    "connections": [
+        { "component1": "V1", "terminal1": "a", "component2": "R1", "terminal2": "a" }
+    ]
+}</code></pre>
+                    </div>
+                </article>
+
+                <!-- Analisar circuito -->
+                <article id="analisar" class="endpoint get">
+                    <div><span class="badge">Análise</span></div>
+                    <h3><span class="method">GET</span> /api/{sessionId}/analysis</h3>
+                    <p>Executa análise eléctrica e devolve tensão e corrente por componente.</p>
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X GET \
+    http://fizicar.somee.com/api/abc-123/analysis</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method GET `
+    -Uri 'http://fizicar.somee.com/api/abc-123/analysis'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{
+    "componentResults": [
+        { "id": "V1", "voltage": 5, "current": 0.005 },
+        { "id": "R1", "voltage": 5, "current": 0.005 }
+    ]
+}</code></pre>
+                    </div>
+                </article>
+
+                <!-- Eliminar sessão -->
+                <article id="eliminar-sessao" class="endpoint delete">
+                    <div><span class="badge">Sessões</span></div>
+                    <h3><span class="method">DELETE</span> /api/session/{sessionId}</h3>
+                    <p>Remove a sessão e todos os dados associados.</p>
+                    <strong>Exemplo</strong>
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="curl">cURL</button>
+                            <button class="tab-btn" data-tab="powershell">PowerShell</button>
+                        </div>
+
+                        <div class="tab-content active" data-pane="curl">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>curl -X DELETE \
+    http://fizicar.somee.com/api/session/abc-123</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" data-pane="powershell">
+                            <div class="code">
+                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                <pre><code>Invoke-RestMethod -Method DELETE `
+    -Uri 'http://fizicar.somee.com/api/session/abc-123'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <strong>Resposta 200</strong>
+                    <div class="code">
+                        <pre><code>{ "message": "Session deleted" }</code></pre>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <section id="exemplo-fluxo">
+                <h2>Exemplo de fluxo completo</h2>
+                <ol>
+                    <li>Criar sessão</li>
+                    <li>Adicionar <code>V1</code> (fonte de 5V) e <code>R1</code> (1kΩ)</li>
+                    <li>Ligar terminais</li>
+                    <li>Obter circuito</li>
+                    <li>Executar análise</li>
+                </ol>
+                <div class="code">
+                    <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                    <pre><code>POST /api/session
+→ { "sessionId": "abc-123" }
+
+POST /api/abc-123/component
+{ "id":"V1", "type":"voltageSource", "value":5 }
+
+POST /api/abc-123/component
+{ "id":"R1", "type":"resistor", "value":1000 }
+
+POST /api/abc-123/connect
+{ "component1":"V1","terminal1":"a","component2":"R1","terminal2":"a" }
+
+GET /api/abc-123/analysis
+→ { "componentResults": [ {"id":"V1","voltage":5,"current":0.005}, {"id":"R1","voltage":5,"current":0.005} ] }
+</code></pre>
+                </div>
+            </section>
+
+            <section id="visual">
+                <h2>Visual minimalista do circuito (exemplo)</h2>
+                <p>Fonte de 5V em série com resistor de 1kΩ.</p>
+                <div class="svgwrap">
+                    <img style="scale: 1.2;" src="./imgs/circuitoBasico.png" alt="Exemplo de um circuito">
+
+                </div>
+            </section>
+
+            <section id="erros">
+                <h2>Erros comuns</h2>
+                <ul>
+                    <li><strong>400</strong> — JSON inválido ou campos em falta.</li>
+                    <li><strong>404</strong> — <code>sessionId</code> inexistente.</li>
+                    <li><strong>409</strong> — Identificador de componente duplicado dentro da sessão.</li>
+                    <li><strong>422</strong> — Ligação impossível devido a terminais incompatíveis.</li>
+                </ul>
+            </section>
+
+            <section id="faq">
+                <h2>FAQ</h2>
+                <details>
+                    <summary>Que tipos de componente estão disponíveis?</summary>
+                    <p>Exemplos: <code>resistor</code>, <code>voltageSource</code>, <code>currentSource</code>,
+                        <code>capacitor</code>, <code>inductor</code>. A lista pode crescer conforme a evolução do
+                        serviço.
+                    </p>
+                </details>
+                <details>
+                    <summary>Qual o formato das unidades?</summary>
+                    <p>Valores numéricos em SI. Converta prefixos (k, m, µ) no cliente ou no servidor conforme a
+                        política adoptada.</p>
+                </details>
+            </section>
+
+            <p class="footer">© 2025 • Criado por Isac Laercio Isaías Munguambe</p>
+        </main>
+    </div>
+
+    <script>
+        // copiar código
+        document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async (e) => {
+            const pre = e.target.closest('.code')?.querySelector('pre');
+            const text = pre?.innerText || '';
+            try {
+                await navigator.clipboard.writeText(text);
+                const orig = e.target.textContent;
+                e.target.textContent = 'Copiado';
+                setTimeout(() => e.target.textContent = orig, 1400);
+            } catch (err) {
+                alert('Não foi possível copiar.');
+            }
+        }));
+        document.querySelectorAll('.code-tabs').forEach((tabs) => {
+            const btns = tabs.querySelectorAll('.tab-btn');
+            const panes = tabs.querySelectorAll('.tab-content');
+
+            btns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    // limpar estado apenas neste bloco
+                    btns.forEach(b => b.classList.remove('active'));
+                    panes.forEach(p => p.classList.remove('active'));
+
+                    // activar botão e painel correspondentes
+                    btn.classList.add('active');
+                    const paneName = btn.getAttribute('data-tab');
+                    const pane = tabs.querySelector(`.tab-content[data-pane="${paneName}"]`);
+                    if (pane) pane.classList.add('active');
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
