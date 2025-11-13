@@ -1,1 +1,0 @@
-# fizicar.github.io
