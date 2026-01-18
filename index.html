@@ -514,7 +514,7 @@
                     </div>
                     <div class="card">
                         <div class="status ok">• Tempo de Resposta</div>
-                        <div class="muted">Latência &lt; 200ms por operação.</div>
+                        <div class="muted">Latência &lt; 1s por operação.</div>
                     </div>
                     <div class="card">
                         <div class="status ok">• Versatilidade</div>
@@ -592,7 +592,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X POST \
     -H "Content-Type: application/json" \
     http://fizicar.somee.com/api/session</code></pre>
@@ -601,7 +601,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method POST `
     -Uri 'http://fizicar.somee.com/api/session' `
     -ContentType 'application/json' `
@@ -640,7 +640,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"id":"R1","type":"resistor","value":1000}' \
@@ -650,7 +650,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method POST `
     -Uri 'http://fizicar.somee.com/api/abc-123/component' `
     -ContentType 'application/json' `
@@ -696,7 +696,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"component1":"R1","terminal1":"a","component2":"V1","terminal2":"a"}' \
@@ -706,7 +706,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method POST `
     -Uri 'http://fizicar.somee.com/api/abc-123/connect' `
     -ContentType 'application/json' `
@@ -735,7 +735,8 @@
         { "id": "R1", "type": "resistor", "value": 1000 }
     ],
     "connections": [
-        { "component1": "V1", "terminal1": "a", "component2": "R1", "terminal2": "a" }
+        { "component1": "V1", "terminal1": "a", "component2": "R1", "terminal2": "a" },
+        { "component1": "V1", "terminal1": "b", "component2": "R1", "terminal2": "b" }
     ]
 }</code></pre>
                     </div>
@@ -749,24 +750,26 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"components":[{"id":"V1","type":"voltageSource","value":5},{"id":"R1","type":"resistor","value":1000}],
-        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}]}' \
+        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}
+            ,{"component1":"V1","terminal1":"b","component2":"R1","terminal2":"b"}]}' \
     http://fizicar.somee.com/api/abc-123/circuit</code></pre>
                             </div>
                         </div>
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method POST `
     -Uri 'http://fizicar.somee.com/api/abc-123/circuit' `
     -ContentType 'application/json' `
     -Body '{
         "components":[{"id":"V1","type":"voltageSource","value":5},{"id":"R1","type":"resistor","value":1000}],
-        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}]
+        "connections":[{"component1":"V1","terminal1":"a","component2":"R1","terminal2":"a"}
+            ,{"component1":"V1","terminal1":"b","component2":"R1","terminal2":"b"}]
     }'</code></pre>
                             </div>
                         </div>
@@ -792,7 +795,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X GET \
     http://fizicar.somee.com/api/abc-123/circuit</code></pre>
                             </div>
@@ -800,7 +803,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method GET `
     -Uri 'http://fizicar.somee.com/api/abc-123/circuit'</code></pre>
                             </div>
@@ -835,7 +838,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X GET \
     http://fizicar.somee.com/api/abc-123/analysis</code></pre>
                             </div>
@@ -843,7 +846,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method GET `
     -Uri 'http://fizicar.somee.com/api/abc-123/analysis'</code></pre>
                             </div>
@@ -875,7 +878,7 @@
 
                         <div class="tab-content active" data-pane="curl">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>curl -X DELETE \
     http://fizicar.somee.com/api/session/abc-123</code></pre>
                             </div>
@@ -883,7 +886,7 @@
 
                         <div class="tab-content" data-pane="powershell">
                             <div class="code">
-                                <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                                
                                 <pre><code>Invoke-RestMethod -Method DELETE `
     -Uri 'http://fizicar.somee.com/api/session/abc-123'</code></pre>
                             </div>
@@ -909,7 +912,7 @@
                     <li>Executar análise</li>
                 </ol>
                 <div class="code">
-                    <div class="actions"><button class="btn" data-copy>Copiar</button></div>
+                    
                     <pre><code>POST /api/session
 → { "sessionId": "abc-123" }
 
@@ -921,6 +924,9 @@ POST /api/abc-123/component
 
 POST /api/abc-123/connect
 { "component1":"V1","terminal1":"a","component2":"R1","terminal2":"a" }
+
+POST /api/abc-123/connect
+{ "component1":"V1","terminal1":"b","component2":"R1","terminal2":"b" }
 
 GET /api/abc-123/analysis
 → { "componentResults": [ {"id":"V1","voltage":5,"current":0.005}, {"id":"R1","voltage":5,"current":0.005} ] }
